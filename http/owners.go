@@ -11,8 +11,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	wolf "github.com/realOkeani/wolf-dynasty-api"
-	"github.homedepot.com/dev-insights/team-management-api/models"
-	"github.homedepot.com/dev-insights/team-management-api/sql"
+	"github.com/realOkeani/wolf-dynasty-api/models"
+	"github.com/realOkeani/wolf-dynasty-api/sql"
 )
 
 type ownersHandler struct {
