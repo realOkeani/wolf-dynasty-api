@@ -3,21 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
-	wolf "github.homedepot.com/dev-insights/team-management-api"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 
 	"github.com/gorilla/mux"
 
-	wolf "github.com/wolf-dynasty-api/wolf-dynasty-api"
-	route "github.com/wolf-dynasty-api/http"
-	leagueSQL "github.com/wolf-dynasty-api/sql/"
+	wolf "github.com/realOkeani/wolf-dynasty-api"
+	route "github.com/realOkeani/wolf-dynasty-api/http"
+	ownerSQL "github.com/realOkeani/wolfdynasty-api/sql"
 )
 
 func main() {
@@ -78,4 +78,3 @@ func main() {
 	log.Println("shutting down")
 	os.Exit(0)
 }
-

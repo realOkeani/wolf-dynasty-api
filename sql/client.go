@@ -7,7 +7,7 @@ import (
 
 //go:generate counterfeiter . Client
 type Client interface {
-	GetOwners() ([]models.Owners, error)
+	GetOwners() ([]models.Owner, error)
 }
 
 type client struct {
@@ -21,4 +21,3 @@ func NewTeamsClient(db *sqlx.DB) Client {
 		DB: db,
 	}
 }
-

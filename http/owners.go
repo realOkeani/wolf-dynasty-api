@@ -15,7 +15,7 @@ import (
 	"github.homedepot.com/dev-insights/team-management-api/sql"
 )
 
-type teamsHandler struct {
+type ownersHandler struct {
 	SQLClient sql.Client
 }
 
@@ -24,37 +24,37 @@ func addTeamsHandler(s wolf.Services, router *mux.Router) {
 		Methods("GET").
 		Path("/v1/teams").
 		Name("GetTeams").
-		HandlerFunc((&teamsHandler{
+		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
-		}).GetTeams)
+		}).GetOwners)
 
 	router.
 		Methods("POST").
 		Path("/v1/teams").
 		Name("CreateTeam").
-		HandlerFunc((&teamsHandler{
+		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
-		}).CreateTeam)
+		}).CreateOwner)
 
 	router.
 		Methods("PATCH").
 		Path("/v1/teams/{guid}").
 		Name("PatchTeam").
-		HandlerFunc((&teamsHandler{
+		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
-		}).UpdateTeam)
+		}).UpdateOwner)
 
 	router.
 		Methods("DELETE").
 		Path("/v1/teams/{guid}").
 		Name("DeleteTeam").
-		HandlerFunc((&teamsHandler{
+		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
-		}).DeleteTeam)
+		}).DeleteOwner)
 }
 
-func (th *teamsHandler) GetTeams(w http.ResponseWriter, r *http.Request) {
-	teams, err := th.SQLClient.GetTeams()
+func (oh *ownersHandler) GetOwners(w http.ResponseWriter, r *http.Request) {
+	owners, err := oh.SQLClient.GetOwners()
 
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusInternalServerError)
@@ -63,12 +63,12 @@ func (th *teamsHandler) GetTeams(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, teams, http.StatusOK)
+	writeJSON(w, owners, http.StatusOK)
 }
 
-func (th *teamsHandler) CreateTeam(w http.ResponseWriter, r *http.Request) {
-	var team models.Team
-	err := json.NewDecoder(r.Body).Decode(&team)
+func (oh *ownersHandler) CreateOwner(w http.ResponseWriter, r *http.Request) {
+	var owner models.Owner
+	err := json.NewDecoder(r.Body).Decode(&owner)
 
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusBadRequest)
@@ -77,13 +77,13 @@ func (th *teamsHandler) CreateTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	team.ID = uuid.New().String()
+	owner.ID = uuid.New().String()
 
 	t := time.Now()
-	team.CreatedAt = t
-	team.UpdatedAt = t
+	owner.CreatedAt = t
+	owner.UpdatedAt = t
 
-	retTeam, err := th.SQLClient.AddTeam(team)
+	retOwner, err := oh.SQLClient.AddOwner(owner)
 
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusInternalServerError)
@@ -92,13 +92,13 @@ func (th *teamsHandler) CreateTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, retTeam, http.StatusCreated)
+	writeJSON(w, retOwner, http.StatusCreated)
 }
 
-func (th *teamsHandler) UpdateTeam(w http.ResponseWriter, r *http.Request) {
-	var newTeam models.Team
+func (oh *ownersHandler) UpdateOwner(w http.ResponseWriter, r *http.Request) {
+	var newOwner models.Owner
 
-	err := json.NewDecoder(r.Body).Decode(&newTeam)
+	err := json.NewDecoder(r.Body).Decode(&newOwner)
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusBadRequest)
 		writeJSONError(w, err.Error(), http.StatusBadRequest)
@@ -109,7 +109,7 @@ func (th *teamsHandler) UpdateTeam(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	guid := vars["guid"]
 
-	team, err := th.SQLClient.GetTeam(guid)
+	owner, err := oh.SQLClient.GetOwner(guid)
 	if err != nil {
 		if strings.Contains(err.Error(), "no rows") {
 			log.Println(r.Method, r.URL, err.Error(), http.StatusNotFound)
@@ -125,10 +125,10 @@ func (th *teamsHandler) UpdateTeam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t := time.Now()
-	team.UpdatedAt = t
-	team.Name = newTeam.Name
+	owner.UpdatedAt = t
+	owner.Name = newOwner.Name
 
-	retTeam, err := th.SQLClient.UpdateTeam(team)
+	retOwner, err := oh.SQLClient.UpdateOwner(owner)
 
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusInternalServerError)
@@ -137,15 +137,14 @@ func (th *teamsHandler) UpdateTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, retTeam, http.StatusOK)
+	writeJSON(w, retOwner, http.StatusOK)
 }
 
-
-func (th *teamsHandler) DeleteTeam(w http.ResponseWriter, r *http.Request) {
+func (oh *ownersHandler) DeleteOwner(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	guid := vars["guid"]
 
-	team, err := th.SQLClient.GetTeam(guid)
+	team, err := oh.SQLClient.GetTeam(guid)
 	if err != nil {
 		if strings.Contains(err.Error(), "no rows") {
 			log.Println(r.Method, r.URL, err.Error(), http.StatusNotFound)
@@ -159,7 +158,7 @@ func (th *teamsHandler) DeleteTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = th.SQLClient.DeleteTeam(team)
+	err = oh.SQLClient.DeleteTeam(team)
 
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusInternalServerError)
