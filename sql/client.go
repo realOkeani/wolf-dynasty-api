@@ -8,16 +8,20 @@ import (
 //go:generate counterfeiter . Client
 type Client interface {
 	GetOwners() ([]models.Owner, error)
+	AddOwner(models.Owner) (models.Owner, error)
+	GetOwner(string) (models.Owner, error)
+	UpdateOwner(models.Owner) (models.Owner, error)
+	DeleteOwner(models.Owner) error
 }
 
 type client struct {
 	*sqlx.DB
 }
 
-func NewTeamsClient(db *sqlx.DB) Client {
-	db.MustExec(createOwnersTable)
+// func NewOwnersClient(db *sqlx.DB) Client {
+// 	db.MustExec(createOwnersTable)
 
-	return &client{
-		DB: db,
-	}
-}
+// 	return &client{
+// 		DB: db,
+// 	}
+// }

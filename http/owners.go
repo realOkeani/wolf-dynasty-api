@@ -19,35 +19,35 @@ type ownersHandler struct {
 	SQLClient sql.Client
 }
 
-func addTeamsHandler(s wolf.Services, router *mux.Router) {
+func addOwnersHandler(s wolf.Services, router *mux.Router) {
 	router.
 		Methods("GET").
-		Path("/v1/teams").
-		Name("GetTeams").
+		Path("/v1/owners").
+		Name("GetOwners").
 		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
 		}).GetOwners)
 
 	router.
 		Methods("POST").
-		Path("/v1/teams").
-		Name("CreateTeam").
+		Path("/v1/owners").
+		Name("CreateOwner").
 		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
 		}).CreateOwner)
 
 	router.
 		Methods("PATCH").
-		Path("/v1/teams/{guid}").
-		Name("PatchTeam").
+		Path("/v1/owners/{guid}").
+		Name("PatchOwner").
 		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
 		}).UpdateOwner)
 
 	router.
 		Methods("DELETE").
-		Path("/v1/teams/{guid}").
-		Name("DeleteTeam").
+		Path("/v1/owners/{guid}").
+		Name("DeleteOwner").
 		HandlerFunc((&ownersHandler{
 			SQLClient: s.SQLClient,
 		}).DeleteOwner)
@@ -144,7 +144,7 @@ func (oh *ownersHandler) DeleteOwner(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	guid := vars["guid"]
 
-	team, err := oh.SQLClient.GetTeam(guid)
+	owner, err := oh.SQLClient.GetOwner(guid)
 	if err != nil {
 		if strings.Contains(err.Error(), "no rows") {
 			log.Println(r.Method, r.URL, err.Error(), http.StatusNotFound)
@@ -158,7 +158,7 @@ func (oh *ownersHandler) DeleteOwner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = oh.SQLClient.DeleteTeam(team)
+	err = oh.SQLClient.DeleteOwner(owner)
 
 	if err != nil {
 		log.Println(r.Method, r.URL, err.Error(), http.StatusInternalServerError)

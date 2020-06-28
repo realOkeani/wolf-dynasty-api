@@ -14,7 +14,7 @@ var (
 		)`
 
 	insertOwner = `
-		INSERT INTO Owners (ID, NAME, CreatedAt, UpdatedAt, EMAIL) VALUES (?, ?, ?, ?, ?)
+		INSERT INTO Owners ID, NAME, CreatedAt, UpdatedAt, EMAIL VALUES (?, ?, ?, ?, ?)
   `
 	getAllOwners = `SELECT ID, NAME, CreatedAt, UpdatedAt, EMAIL FROM Owners`
 
