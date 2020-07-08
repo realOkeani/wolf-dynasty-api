@@ -50,14 +50,16 @@ func main() {
 	// }
 
 	/*
-		Package mux implments a request router and dispatcher. The name mux stands
-		for "HTTP request multiplexer". Like the standard http.ServeMux, mux.Router
-		matches incoming requests against a list of registered routes and calls a
-		handler for the route that matches the URL or other conditions.
+		Package mux implments a request router and dispatcher.
+		The name mux stands for "HTTP request multiplexer". Like the standard http.ServeMux, mux.Router
+		matches incoming requests against a list of registered routes and calls a handler for the route
+		that matches the URL or other conditions.
 		In telecommunications and computer networks, multiplexing (sometimes contracted to muxing)
 		is a method by which multiple analog or digital signals are combined into one signal over a
 		shared medium. The aim is to share a scarce resource. A device that performs the multiplexing
 		is called a multiplexer (MUX).
+		Simply put, ServeMux is and HTTP request multiplexer. It's responsible for matching the URL
+		in the request to an appropriate handler and executing it.
 		The main features are:
 		- Requests can be matched based on URL host, path, path prefix, schemes, header
 			and query values, HTTP methods or using custom matchers.
@@ -69,8 +71,20 @@ func main() {
 		- It implements the http.Handler interface so it is compatible with the standard http.ServeMux.
 	*/
 
+	/*
+		New Router returns a new router instance.
+		Router registers routes to be matched and dispatches a handler. It implements the http.Handler
+		interface, so it can be registered to serve requests.
+	*/
 	r := mux.NewRouter()
+	//This sends the new mux.Router to the add routes func that has all of the route functions for the router to use.
 	route.AddRoutes(r)
+
+	/*
+		Use appends a MiddlewareFunc to the chain. Middleware can be used to intercept or otherwise
+		modify requests and/or responses, and are executed in the order that they are applied to the Router.
+		Use applies whatever middleware function you would like to add to your mux.Router.
+	*/
 	r.Use(route.CorsHandler)
 
 	srv := &http.Server{

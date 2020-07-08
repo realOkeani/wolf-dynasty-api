@@ -103,6 +103,7 @@ func log(h http.Handler) http.Handler {
 Now, even if the code inside our handler panics, we’ll still see the “After” line printed.
 */
 
+//Corshandler for all the handling
 func CorsHandler(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
